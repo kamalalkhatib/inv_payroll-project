@@ -1,0 +1,27 @@
+/*this function checks if there is overlapping*/
+create or replace function overlapping_check(p_sdate date,p_edate date)
+return boolean
+is
+v_maxdate date;
+v_mindate date;
+v_chk boolean;
+null_exc exception;
+begin
+if ( p_sdate is null or p_edate is null )
+then
+raise null_exc;
+end if;
+if (trunc(p_sdate) between v_mindate and v_maxdate)
+or (trunc(p_sdate) < v_mindate and trunc(p_edate) >= v_mindate)
+then
+v_chk:=true;
+else
+v_chk:=false;
+END IF;
+return v_chk;
+exception
+when null_exc then
+dbms_output.put_line('null value is not allowed');
+when others then
+raise;
+end;
