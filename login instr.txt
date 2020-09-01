@@ -1,0 +1,15 @@
+/*this trigger to instrument the code so we can trace 
+  the required sessions later */
+CREATE OR REPLACE TRIGGER LOGON_TRIGGER
+AFTER LOGON ON DATABASE
+DECLARE
+v_user_identifier varchar2(64);
+BEGIN
+SELECT SYS_CONTEXT('USERENV', 'OS_USER')   
+       ||':'||
+       SYS_CONTEXT('USERENV', 'IP_ADDRESS')
+  INTO v_user_identifier
+  FROM dual;
+DBMS_SESSION.SET_IDENTIFIER(v_user_identifier);
+END;
+/
