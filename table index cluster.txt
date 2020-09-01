@@ -1,0 +1,19 @@
+/*this is index clustered table, based on requirments, most of the time
+  we need to retrieve the data based on the period, so, by using  "index clustered table"
+  we will store the related data together, that means we will read less blocks and that decreases I/O
+  which improves the performance*/
+create cluster emp_sal_period
+(per_id number(4))
+size 1024
+/
+create index emp_sal_period_cls_idx on cluster emp_sal_period
+/
+create table emp_sal_period_cls(trans_id number(4) GENERATED ALWAYS AS IDENTITY primary key,
+per_id number(4) not null,emp_id number(2),
+tot_hours number(5,2)not null,tot_taxes number(2,1)not null,
+tot_all number(2)not null,tot_ded number(2)not null,net_sal number(5,2)not null,
+constraints emp_id_fk foreign key(emp_id)references emp(emp_id),
+constraints empsal_perid_fk  foreign key(per_id) references work_periods(per_id) 
+)
+cluster emp_sal_period(per_id)
+/
