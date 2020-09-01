@@ -1,0 +1,13 @@
+/* this trigger used to update the current qty of each item after each transaction */
+create or replace trigger item_update_qty_trig
+    before insert
+    on trans_main
+    for each row
+    begin
+    /* calling the procedure to update the qty */
+    inv_dml_pkg.qty_update(:new.item_id,:new.item_qty,:new.trans_type);
+    exception when others then
+    error_mgr.log_error ('qty updating trigger.');
+    raise;
+  end;
+/
