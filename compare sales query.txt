@@ -1,0 +1,8 @@
+-- Comparing every month's sales with the previous month
+select mnt,yer,s_qty,nvl(prev,0),nvl(round((s_qty-prev)/prev,3),0)*100||'%' ratio
+from(
+select extract(month from trans_date)mnt,extract(YEAR from trans_date)yer,sum(item_qty)s_qty,
+lag(sum(item_qty)) over(order by extract(month from trans_date),extract(YEAR from trans_date))prev
+from trans_tst t join trans_det_tst d
+on d.trans_id=t.trans_id group by extract(month from trans_date),extract(year from trans_date)
+order by 1,2);
