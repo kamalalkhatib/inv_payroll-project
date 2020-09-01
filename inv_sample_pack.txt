@@ -1,0 +1,60 @@
+/*This package contains a fun to check if quantity avilable 
+  before processing the transaction, and contains pro to insert into the table*/
+create or replace package trans_dml_pkg
+is
+null_exc exception;
+function qty_chk(p_item in items.item_id%type,p_item_qty in items.item_qty%type)return boolean;
+procedure trans_main_ins(p_trans_date in date,p_cust_id customers.cust_id%type,
+			  p_item_id items.item_id%type,p_item_qty in items.item_qty%type,p_trans_type in trans_types.type_id%type)
+end;
+/
+create or replace package body trans_dml_pkg
+is
+function qty_chk(p_item in items.item_id%type,p_item_qty items.item_qty%type)return boolean
+is
+v_cur_qty items.item_qty%type;
+v_condition boolean;
+begin
+if ( p_item is null or p_item_qty is null )
+then
+raise null_exc;
+end if;
+/* select and lock the required data */
+select item_qty into v_cur_qty from items
+where item_id=p_item for update;
+if ( v_cur_qty >= p_item_qty )
+ then
+	v_condition:=true;
+ else
+	v_condition:=false;
+end if;
+return v_condition;
+exception
+when null_exc then
+dbms_output.put_line('null value is not allowed');
+when others then
+raise;
+end;
+procedure trans_main_ins(p_trans_date in date,p_cust_id customers.cust_id%type,
+			  p_item_id items.item_id%type,p_item_qty in items.item_qty%type,p_trans_type in trans_types.type_id%type)
+is
+v_qty_chk boolean;
+begin
+if ( p_trans_date is null or p_cust_id is null 
+     p_item_id is null 	  or o_item_qty is null	)
+then
+raise null_exc;
+end if;
+v_qty_chk:=qty_chk(p_item_id,p_item_qty);
+if (v_qty_chk) then
+insert into trans_main values(p_trans_date default sysdate,p_cust_id,p_item_id,item_qty,p_trans_type);
+else
+raise_application_error(-2001,' no enough qty in inventory..');
+end if;
+exception
+when null_exc then
+dbms_output.put_line('null value is not allowed');
+when others then
+  error_mgr.log_error ('hour diff calc.');
+  raise;
+end;
