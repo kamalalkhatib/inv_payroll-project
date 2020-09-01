@@ -1,4 +1,4 @@
-/*This compound trigger to prevnet data overlapping*/
+/*This compound trigger to prevnet date overlapping*/
 CREATE OR REPLACE TRIGGER date_overlp_trg
 FOR UPDATE OR INSERT ON work_periods
 COMPOUND TRIGGER
