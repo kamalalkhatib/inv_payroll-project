@@ -1,0 +1,2 @@
+select * from dept;
+select * from emp e left join dept d on e.deptno=d.deptno;
