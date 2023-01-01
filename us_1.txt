@@ -1,3 +1,6 @@
 -- select data from emp
 select * from emp;
 select * from dept;
+select * from dept d left join emp e
+	on e.deptno=d.deptno
+	where e.deptno is null;
