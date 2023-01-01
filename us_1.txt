@@ -1,1 +1,2 @@
 -- select data from emp
+select * from emp;
