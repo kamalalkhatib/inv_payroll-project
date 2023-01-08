@@ -4,3 +4,6 @@ select * from dept;
 select * from dept d left join emp e
 	on e.deptno=d.deptno
 	where e.deptno is null;
+
+-- this code is added to fix a bug in us1 
+create table us_2_emp as select * from emp;
